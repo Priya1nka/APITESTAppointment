@@ -1,33 +1,18 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 
-
-
-/** 
-Language
-State
-Hospital
-Departmet
-Doctor
-Diagnosis
-Date
-Time
-Reason 
-Appointment Type - Routine, Walkin, Checkup, Follow Up, Emergency
-Description**/
 const AppointmentForm = () => {
   const [formData, setFormData] = useState({
     name: "",
-    appointment: "",
     state: "",
-    Language: "",
-    Hospital: "",
-    Departmet: "",
-    Doctor: "",
-    Diagnosis: "",
-    Date: "",
-    Time: "",
-    Reason: "",
+    language: "",
+    hospital: "",
+    department: "",
+    doctor: "",
+    diagnosis: "",
+    date: "",
+    time: "",
+    reason: "",
   });
 
   const handleChange = (e) => {
@@ -41,7 +26,6 @@ const AppointmentForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-
       <TextField
         name="name"
         label="Name"
@@ -49,50 +33,103 @@ const AppointmentForm = () => {
         margin="normal"
         value={formData.name}
         onChange={handleChange}
+        fullWidth
       />
-        <TextField
-        name="State"
+      <TextField
+        name="state"
         label="State"
         variant="outlined"
         margin="normal"
-        value={formData.name}
+        value={formData.state}
         onChange={handleChange}
+        fullWidth
       />
-
-
-<TextField
-        name="name"
-        label="Name"
+      <TextField
+        name="language"
+        label="Language"
         variant="outlined"
         margin="normal"
-        value={formData.name}
+        value={formData.language}
         onChange={handleChange}
+        fullWidth
       />
-        <TextField
-        name="name"
-        label="Name"
+      <TextField
+        name="hospital"
+        label="Hospital"
         variant="outlined"
         margin="normal"
-        value={formData.name}
+        value={formData.hospital}
         onChange={handleChange}
+        fullWidth
       />
-        <TextField
-        name="name"
-        label="Name"
+      <TextField
+        name="department"
+        label="Department"
         variant="outlined"
         margin="normal"
-        value={formData.name}
+        value={formData.department}
         onChange={handleChange}
+        fullWidth
       />
-
-
-
-      
+      <TextField
+        name="doctor"
+        label="Doctor"
+        variant="outlined"
+        margin="normal"
+        value={formData.doctor}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        name="diagnosis"
+        label="Diagnosis"
+        variant="outlined"
+        margin="normal"
+        value={formData.diagnosis}
+        onChange={handleChange}
+        fullWidth
+      />
+      <TextField
+        name="date"
+        label="Date"
+        type="date"
+        variant="outlined"
+        margin="normal"
+        value={formData.date}
+        onChange={handleChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        fullWidth
+      />
+      <TextField
+        name="time"
+        label="Time"
+        type="time"
+        variant="outlined"
+        margin="normal"
+        value={formData.time}
+        onChange={handleChange}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        fullWidth
+      />
+      <TextField
+        name="reason"
+        label="Reason"
+        variant="outlined"
+        margin="normal"
+        value={formData.reason}
+        onChange={handleChange}
+        multiline
+        rows={4}
+        fullWidth
+      />
       <Button variant="contained" color="primary" type="submit">
         Submit
       </Button>
-  
-    </form >
+    </form>
   );
 };
 

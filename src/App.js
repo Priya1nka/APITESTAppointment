@@ -1,15 +1,16 @@
 
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import AppointmentForm from './components/AppointmentForm';
+import DiagnosisForm from './components/DiagnosisForm';
 
 const theme = createTheme();
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <AppointmentForm/>
+      <DiagnosisForm/>
     </ThemeProvider>
+
   );
 }
 
