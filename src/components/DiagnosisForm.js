@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";  
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+
 import useWindowDimensions from "../utils/useWindowDimensions";
 
 function AddDiagnosis(props) {
@@ -28,6 +30,7 @@ function AddDiagnosis(props) {
   });
   const [diagnosesList, setDiagnosesList] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+  const [loading, setLoading] = useState(false); // For loading state
 
   const handleChange = (name) => (event) => {
     setFormData({
@@ -36,59 +39,65 @@ function AddDiagnosis(props) {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true); 
+
     const newDiagnosis = {
-      resourceType: "DiagnosticReport",
-      id: formData.DiagnosesName, // You can generate a unique ID here if necessary
-      meta: {
-        versionId: "1", // You can generate this dynamically or use a constant
-        lastUpdated: new Date().toISOString(),
-        source: "#sourceID", // Modify as necessary
-      },
-      text: {
-        status: "generated",
-        div: `<div xmlns="http://www.w3.org/1999/xhtml"><div class="hapiHeaderText">${formData.DiagnosesName}</div><table class="hapiPropertyTable"><tbody><tr><td>Status</td><td>${formData.Status}</td></tr><tr><td>Issued</td><td>${formData.StartDate}</td></tr></tbody></table></div>`,
-      },
-      status: "registered",
-      code: {
-        coding: [
-          {
-            system: "http://loinc.org",
-            code: "24331-1", // You can modify this LOINC code if necessary
-          },
-        ],
-      },
-      subject: {
-        reference: "https://fhir.udec.cl/baseR4/Patient/PAT-301", // Modify as necessary
-      },
-      issued: formData.StartDate, // Ensure it's in the correct ISO format
-      performer: [
-        {
-          reference: "https://fhir.udec.cl/baseR4/Practitioner/PRA-301", // Modify as necessary
+        resourceType: "DiagnosticReport",
+        id: formData.DiagnosesName,
+        meta: {
+          versionId: "1",
+          lastUpdated: new Date().toISOString(),
+          source: "#sourceID",
         },
-      ],
-    };
+        text: {
+          display: formData.DiagnosesName,
+        },
+        status: formData.Status, // Update status here to match form data
+        code: {
+          coding: [
+            {
+              sequence: formData.Sequence, // Update sequence here
+            },
+          ],
+        },
+        subject: {
+          reference: formData.AddedByDr,
+        },
+        issued: formData.StartDate, // Ensure start date is set correctly
+      };
+      
 
-    if (editIndex !== null) {
-      const updatedList = diagnosesList.map((diagnosis, index) =>
-        index === editIndex ? newDiagnosis : diagnosis
-      );
-      setDiagnosesList(updatedList);
-      setEditIndex(null); 
-    } else {
-      // Add new diagnosis
-      setDiagnosesList([...diagnosesList, newDiagnosis]);
+    try {
+      const response = await axios.post("https://hapi.fhir.org/baseR4/DiagnosticReport", newDiagnosis, {
+        headers: {
+          "Content-Type": "application/fhir+json", 
+        },
+      });
+
+      console.log("Response: ", response.data); 
+      if (editIndex !== null) {
+        const updatedList = diagnosesList.map((diagnosis, index) =>
+          index === editIndex ? newDiagnosis : diagnosis
+        );
+        setDiagnosesList(updatedList);
+        setEditIndex(null); 
+      } else {
+        setDiagnosesList([...diagnosesList, newDiagnosis]);
+      }
+      setFormData({
+        DiagnosesName: "",
+        StartDate: "",
+        Status: "",
+        AddedByDr: "",
+        Sequence: "",
+        file: "",
+      });
+    } catch (error) {
+      console.error("Error submitting data: ", error);
+    } finally {
+      setLoading(false); 
     }
-
-    // Clear the form data after submit
-    setFormData({
-      DiagnosesName: "",
-      StartDate: "",
-      Status: "",
-      AddedByDr: "",
-      Sequence: "",
-      file: "",
-    });
   };
 
   const handleEdit = (index) => {
@@ -210,9 +219,10 @@ function AddDiagnosis(props) {
           variant="contained"
           color="secondary"
           onClick={handleSubmit}
+          disabled={loading} 
         >
           {editIndex !== null ? "Update" : "Save"}&nbsp;
-          Send
+        
         </Button>
       </Box>
 
