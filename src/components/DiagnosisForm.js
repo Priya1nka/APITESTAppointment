@@ -53,18 +53,18 @@ function AddDiagnosis(props) {
         text: {
           display: formData.DiagnosesName,
         },
-        status: formData.Status, // Update status here to match form data
+        status: formData.Status, 
         code: {
           coding: [
             {
-              sequence: formData.Sequence, // Update sequence here
+              sequence: formData.Sequence, 
             },
           ],
         },
         subject: {
           reference: formData.AddedByDr,
         },
-        issued: formData.StartDate, // Ensure start date is set correctly
+        issued: formData.StartDate, 
       };
       
 
